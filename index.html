@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Factoryai2u — AI for the Production Line</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12161B;
+    --surface: #1B2129;
+    --surface-2: #212832;
+    --line: #2C3540;
+    --text: #ECEFF3;
+    --text-dim: #8C96A3;
+    --amber: #F2A93B;
+    --steel: #5B87AC;
+    --radius: 6px;
+  }
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; letter-spacing: 0.04em; }
+  h1,h2,h3{ font-family:'Space Grotesk', sans-serif; font-weight: 600; letter-spacing: -0.01em; }
+  a{ color: inherit; text-decoration:none; }
+  img,svg{ display:block; max-width:100%; }
+  .wrap{ max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(18,22,27,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 18px 0;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size: 18px;
+  }
+  .logo-mark{
+    width: 26px; height: 26px; flex-shrink:0;
+  }
+  .nav-links{ display:flex; gap: 32px; }
+  .nav-links a{ color: var(--text-dim); font-size: 14px; font-weight:500; transition: color .15s; }
+  .nav-links a:hover{ color: var(--text); }
+  .nav-cta{
+    background: var(--amber); color: #1A1502;
+    padding: 9px 18px; border-radius: var(--radius);
+    font-size: 14px; font-weight: 600;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .nav-cta:hover{ transform: translateY(-1px); box-shadow: 0 4px 14px rgba(242,169,59,0.25); }
+  .nav-toggle{ display:none; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding: 96px 0 72px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    color: var(--amber); font-size: 12px; font-weight:600;
+    text-transform: uppercase; margin-bottom: 22px;
+  }
+  .eyebrow::before{
+    content:''; width:6px; height:6px; background: var(--amber); border-radius:1px;
+    display:inline-block;
+  }
+  .hero h1{
+    font-size: 46px; line-height: 1.08; margin-bottom: 22px;
+  }
+  .hero h1 .accent{ color: var(--amber); }
+  .hero p.lead{
+    color: var(--text-dim); font-size: 17px; max-width: 480px; margin-bottom: 32px;
+  }
+  .hero-actions{ display:flex; gap: 14px; align-items:center; flex-wrap:wrap; }
+  .btn-primary{
+    background: var(--amber); color:#1A1502; padding: 13px 24px;
+    border-radius: var(--radius); font-weight:600; font-size:14.5px;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 6px 18px rgba(242,169,59,0.25); }
+  .btn-ghost{
+    color: var(--text); padding: 13px 20px; font-size:14.5px; font-weight:500;
+    border: 1px solid var(--line); border-radius: var(--radius);
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .btn-ghost:hover{ border-color: var(--steel); background: rgba(91,135,172,0.08); }
+
+  /* Schematic diagram - signature element */
+  .schematic{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px 20px 22px;
+    position: relative;
+  }
+  .schematic-label{
+    color: var(--text-dim); font-size: 11px; text-transform: uppercase;
+    margin-bottom: 18px; display:flex; justify-content: space-between;
+  }
+  .schematic-label span:last-child{ color: var(--amber); }
+  #line-diagram{ width:100%; height:auto; }
+  .flow-dot{
+    fill: var(--amber);
+    filter: drop-shadow(0 0 4px rgba(242,169,59,0.7));
+  }
+  .stage-label{
+    fill: var(--text-dim); font-family:'IBM Plex Mono', monospace; font-size: 10.5px;
+  }
+  .stage-title{
+    fill: var(--text); font-family:'Space Grotesk', sans-serif; font-size: 12.5px; font-weight:600;
+  }
+  .flow-path{
+    fill:none; stroke: var(--line); stroke-width: 1.5;
+  }
+  .node-box{
+    fill: var(--surface-2); stroke: var(--line); stroke-width:1;
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    .flow-dot{ animation: travel 4.5s linear infinite; offset-rotate: 0deg; }
+    .flow-dot.d2{ animation-delay: 1.5s; }
+    .flow-dot.d3{ animation-delay: 3s; }
+    @keyframes travel{
+      0%{ offset-distance: 0%; opacity: 0; }
+      5%{ opacity: 1; }
+      95%{ opacity: 1; }
+      100%{ offset-distance: 100%; opacity: 0; }
+    }
+    .flow-dot{ offset-path: path("M20,60 H120 V30 H220 V90 H320 V60 H400"); }
+  }
+
+  /* ---------- Logos strip ---------- */
+  .strip{
+    padding: 28px 0; border-bottom: 1px solid var(--line);
+  }
+  .strip-inner{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap: 18px;
+  }
+  .strip-label{ color: var(--text-dim); font-size: 12px; }
+  .strip-items{ display:flex; gap: 34px; flex-wrap:wrap; }
+  .strip-items span{ color: var(--text-dim); font-size: 13px; font-weight:500; opacity:.8; }
+
+  /* ---------- Pipeline section ---------- */
+  .section{ padding: 88px 0; border-bottom: 1px solid var(--line); }
+  .section-head{ max-width: 620px; margin-bottom: 48px; }
+  .section-head .eyebrow{ margin-bottom: 14px; }
+  .section-head h2{ font-size: 32px; margin-bottom: 14px; }
+  .section-head p{ color: var(--text-dim); font-size: 15.5px; }
+
+  .pipeline{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow:hidden;
+  }
+  .stage{
+    background: var(--surface); padding: 26px 22px;
+  }
+  .stage .num{
+    font-family:'IBM Plex Mono', monospace; color: var(--amber); font-size: 12px; margin-bottom: 14px; display:block;
+  }
+  .stage h3{ font-size: 16px; margin-bottom: 8px; }
+  .stage p{ color: var(--text-dim); font-size: 13.5px; }
+
+  /* ---------- Metrics ---------- */
+  .metrics{
+    display:grid; grid-template-columns: repeat(4,1fr); gap: 24px;
+  }
+  .metric{ border-left: 2px solid var(--amber); padding-left: 16px; }
+  .metric .val{ font-family:'Space Grotesk', sans-serif; font-size: 30px; font-weight:700; }
+  .metric .lbl{ color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+  /* ---------- Capabilities ---------- */
+  .cap-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .cap{
+    background: var(--surface); border:1px solid var(--line); border-radius: 8px; padding: 26px;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .cap:hover{ border-color: var(--steel); transform: translateY(-2px); }
+  .cap-icon{ width: 34px; height:34px; margin-bottom: 18px; color: var(--amber); }
+  .cap h3{ font-size: 16.5px; margin-bottom: 8px; }
+  .cap p{ color: var(--text-dim); font-size: 14px; }
+
+  /* ---------- CTA ---------- */
+  .cta{
+    padding: 88px 0;
+    text-align:center;
+  }
+  .cta h2{ font-size: 34px; margin-bottom: 14px; }
+  .cta p{ color: var(--text-dim); font-size: 16px; margin-bottom: 30px; }
+
+  footer{
+    border-top: 1px solid var(--line); padding: 32px 0;
+  }
+  .foot-row{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap: 14px;
+  }
+  .foot-row p{ color: var(--text-dim); font-size: 13px; }
+  .foot-links{ display:flex; gap: 22px; }
+  .foot-links a{ color: var(--text-dim); font-size: 13px; }
+  .foot-links a:hover{ color: var(--text); }
+
+  @media (max-width: 860px){
+    .hero-grid{ grid-template-columns: 1fr; }
+    .hero h1{ font-size: 34px; }
+    .pipeline{ grid-template-columns: 1fr 1fr; }
+    .metrics{ grid-template-columns: 1fr 1fr; }
+    .cap-grid{ grid-template-columns: 1fr; }
+    .nav-links{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="logo">
+      <svg class="logo-mark" viewBox="0 0 26 26" fill="none">
+        <rect x="1" y="1" width="24" height="24" rx="4" stroke="#F2A93B" stroke-width="1.5"/>
+        <path d="M7 17V9L13 13L19 9V17" stroke="#F2A93B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      FACTORYAI2U
+    </div>
+    <nav class="nav-links">
+      <a href="#pipeline">How it works</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#metrics">Results</a>
+    </nav>
+    <a href="#contact" class="nav-cta">Book a line audit</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Manufacturing intelligence</div>
+      <h1>Put AI on the <span class="accent">production line</span>, not just the dashboard.</h1>
+      <p class="lead">Factoryai2u reads your line in real time — camera feeds, sensor data, throughput logs — and turns it into defect catches, downtime alerts, and yield forecasts your floor team can act on today.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Book a line audit</a>
+        <a href="#pipeline" class="btn-ghost">See how it works</a>
+      </div>
+    </div>
+
+    <div class="schematic">
+      <div class="schematic-label">
+        <span>LIVE LINE MONITOR</span>
+        <span>● RUNNING</span>
+      </div>
+      <svg id="line-diagram" viewBox="0 0 420 120" xmlns="http://www.w3.org/2000/svg">
+        <path class="flow-path" d="M20,60 H120 V30 H220 V90 H320 V60 H400"/>
+        <rect class="node-box" x="4" y="46" width="32" height="28" rx="3"/>
+        <rect class="node-box" x="104" y="16" width="32" height="28" rx="3"/>
+        <rect class="node-box" x="204" y="76" width="32" height="28" rx="3"/>
+        <rect class="node-box" x="304" y="46" width="32" height="28" rx="3"/>
+        <text class="stage-label" x="20" y="94">INPUT</text>
+        <text class="stage-title" x="6" y="66">Cam</text>
+        <text class="stage-label" x="112" y="8">DETECT</text>
+        <text class="stage-title" x="107" y="34">AI</text>
+        <text class="stage-label" x="200" y="112">ALERT</text>
+        <text class="stage-title" x="207" y="94">Flag</text>
+        <text class="stage-label" x="300" y="38">ACTION</text>
+        <text class="stage-title" x="309" y="64">Log</text>
+        <circle class="flow-dot" r="3.2"/>
+        <circle class="flow-dot d2" r="3.2"/>
+        <circle class="flow-dot d3" r="3.2"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="strip">
+  <div class="wrap strip-inner">
+    <span class="strip-label mono">DEPLOYED ACROSS</span>
+    <div class="strip-items">
+      <span>Electronics assembly</span>
+      <span>Food & beverage</span>
+      <span>Plastics & injection molding</span>
+      <span>Textile & garment</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pipeline">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The process</div>
+      <h2>From raw feed to floor decision, in four stages.</h2>
+      <p>No new hardware to install in most plants — Factoryai2u sits on top of the cameras and sensors you already run.</p>
+    </div>
+    <div class="pipeline">
+      <div class="stage">
+        <span class="num mono">01</span>
+        <h3>Capture</h3>
+        <p>Pulls live video and sensor streams from existing line equipment — no rewiring required.</p>
+      </div>
+      <div class="stage">
+        <span class="num mono">02</span>
+        <h3>Detect</h3>
+        <p>Vision models trained on your product spot defects, misalignment, and near-misses as they happen.</p>
+      </div>
+      <div class="stage">
+        <span class="num mono">03</span>
+        <h3>Alert</h3>
+        <p>Supervisors get a flag on the floor tablet within seconds — not a report the next morning.</p>
+      </div>
+      <div class="stage">
+        <span class="num mono">04</span>
+        <h3>Improve</h3>
+        <p>Every event feeds a weekly yield report so you know exactly where the line is losing time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="metrics">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Why plants switch</div>
+      <h2>Built for the floor, measured on the floor.</h2>
+    </div>
+    <div class="metrics">
+      <div class="metric">
+        <div class="val">37%</div>
+        <div class="lbl">fewer missed defects in first 90 days</div>
+      </div>
+      <div class="metric">
+        <div class="val">4.2×</div>
+        <div class="lbl">faster downtime detection</div>
+      </div>
+      <div class="metric">
+        <div class="val">&lt; 2 wks</div>
+        <div class="lbl">typical time to first live alert</div>
+      </div>
+      <div class="metric">
+        <div class="val">0</div>
+        <div class="lbl">new cameras required, on most lines</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="capabilities" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Capabilities</div>
+      <h2>One system, the whole line.</h2>
+      <p>Each module works standalone or together, so you can start where the line hurts most.</p>
+    </div>
+    <div class="cap-grid">
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none"><path d="M12 3L4 7v6c0 5 3.5 8 8 8s8-3 8-8V7l-8-4z" stroke="currentColor" stroke-width="1.5"/></svg>
+        <h3>Defect vision</h3>
+        <p>Camera-based inspection tuned to your product's specific fault patterns, not a generic model.</p>
+      </div>
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <h3>Downtime alerts</h3>
+        <p>Flags stoppages and slowdowns the moment they start, routed straight to the shift supervisor.</p>
+      </div>
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none"><path d="M4 19V9M12 19V5M20 19v-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <h3>Yield forecasting</h3>
+        <p>Projects shift and weekly output from live line data, so planning isn't based on yesterday's numbers.</p>
+      </div>
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M4 10h16" stroke="currentColor" stroke-width="1.5"/></svg>
+        <h3>Shift reporting</h3>
+        <p>Auto-generated end-of-shift summaries — defects caught, downtime logged, output vs. target.</p>
+      </div>
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <h3>Multi-line rollout</h3>
+        <p>Add lines one at a time; each new line trains faster using patterns learned from the last.</p>
+      </div>
+      <div class="cap">
+        <svg class="cap-icon" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M21 12c0 5-3.5 8-9 9-5.5-1-9-4-9-9V6l9-3 9 3v6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <h3>Data stays on-site</h3>
+        <p>Video and sensor data can be processed on local hardware — nothing leaves the plant by default.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap" id="contact">
+    <h2>See what your line is missing.</h2>
+    <p>A line audit takes one visit — we'll show you what Factoryai2u would have caught last week.</p>
+    <a href="mailto:hello@factoryai2u.com" class="btn-primary">Book a line audit</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <p>© 2026 Factoryai2u. Built for the floor.</p>
+    <div class="foot-links">
+      <a href="mailto:hello@factoryai2u.com">hello@factoryai2u.com</a>
+      <a href="#pipeline">How it works</a>
+      <a href="#capabilities">Capabilities</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
