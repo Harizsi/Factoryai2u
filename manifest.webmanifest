@@ -1,0 +1,25 @@
+{
+  "name": "FactoryAI2U — Manufacturing Operating System",
+  "short_name": "FactoryAI2U",
+  "description": "Mobile-first manufacturing PWA: production, breakdown/Andon, quality, loss and management drill-down.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
