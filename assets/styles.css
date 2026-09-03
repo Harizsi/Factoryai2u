@@ -248,6 +248,7 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
 .toast.warn { border-left-color: var(--warn); }
 @keyframes slideup { from { opacity: 0; transform: translateY(10px); } }
 .modal-host { position: fixed; inset: 0; z-index: 100; background: rgba(3,7,16,.7); display: grid; place-items: center; padding: var(--space-4); overflow: auto; }
+.modal-host[hidden] { display: none; }
 /* Modal is a flex column: head + scrollable body + always-visible sticky footer.
    Height is capped to the *visible* viewport (100dvh) so the footer/Save button
    is never pushed below the fold on mobile browsers with dynamic toolbars. */
