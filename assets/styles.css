@@ -206,6 +206,10 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
 }
 .role-pick .rp:hover { border-color: var(--primary); }
 .role-pick .rp.sel { border-color: var(--primary); background: rgba(47,123,255,.12); }
+.role-pick .rp.sel::after { content: "✓"; position: absolute; top: 8px; right: 10px; color: var(--primary); font-weight: 800; }
+.role-pick .rp { position: relative; }
+.login-hint { text-align: center; color: var(--muted); font-size: .82rem; margin-bottom: 10px; }
+.preview-warn { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: rgba(245,166,35,.12); border: 1px solid var(--warn); color: #ffdca0; font-size: .78rem; line-height: 1.45; }
 .role-pick .rp .rn { font-weight: 700; font-size: .92rem; }
 .role-pick .rp .rd { font-size: .72rem; color: var(--muted); }
 
@@ -243,13 +247,16 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
 .toast.err { border-left-color: var(--danger); }
 .toast.warn { border-left-color: var(--warn); }
 @keyframes slideup { from { opacity: 0; transform: translateY(10px); } }
-.modal-host { position: fixed; inset: 0; z-index: 100; background: rgba(3,7,16,.7); display: grid; place-items: center; padding: var(--space-4); }
-.modal-host[hidden] { display: none; }
-.modal { background: var(--surface); border: 1px solid var(--border-strong); border-radius: 16px; width: min(640px, 100%); max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow); }
-.modal .m-head { display: flex; align-items: center; padding: var(--space-4); border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--surface); }
-.modal .m-head h2 { margin: 0; } .modal .m-head .x { margin-left: auto; }
-.modal .m-body { padding: var(--space-4); }
-.modal .m-foot { padding: var(--space-4); border-top: 1px solid var(--border); display: flex; gap: var(--space-2); justify-content: flex-end; position: sticky; bottom: 0; background: var(--surface); }
+.modal-host { position: fixed; inset: 0; z-index: 100; background: rgba(3,7,16,.7); display: grid; place-items: center; padding: var(--space-4); overflow: auto; }
+/* Modal is a flex column: head + scrollable body + always-visible sticky footer.
+   Height is capped to the *visible* viewport (100dvh) so the footer/Save button
+   is never pushed below the fold on mobile browsers with dynamic toolbars. */
+.modal { background: var(--surface); border: 1px solid var(--border-strong); border-radius: 16px; width: min(640px, 100%); max-height: calc(100dvh - 2 * var(--space-4)); display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow); }
+.modal .m-head { flex: 0 0 auto; display: flex; align-items: center; padding: var(--space-4); border-bottom: 1px solid var(--border); background: var(--surface); }
+.modal .m-head h2 { margin: 0; font-size: 1.1rem; } .modal .m-head .x { margin-left: auto; }
+.modal .m-body { flex: 1 1 auto; padding: var(--space-4); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.modal .m-foot { flex: 0 0 auto; padding: var(--space-4); padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: flex-end; background: var(--surface); }
+.modal .m-foot .btn { min-height: 44px; }
 .net-banner { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 39; text-align: center; padding: 6px; font-size: .8rem; font-weight: 600; background: var(--warn); color: #201400; }
 .net-banner.offline { background: var(--faint); color: #06101f; }
 
@@ -280,3 +287,22 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: var(--p
   .page-head .actions { width: 100%; }
 }
 @media (min-width: 901px) { .mobile-only { display: none !important; } }
+
+/* dvh fallback for older browsers */
+@supports not (height: 100dvh) {
+  .modal { max-height: calc(100vh - 2 * var(--space-4)); }
+}
+
+/* Admin CRUD affordances */
+.crud-bar { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin: 6px 0 10px; }
+.crud-bar .btn { min-height: 40px; }
+.row-actions { display: flex; gap: 6px; justify-content: flex-end; white-space: nowrap; }
+.row-actions .btn { min-height: 34px; padding: 4px 10px; font-size: .8rem; }
+table td.row-actions-cell { text-align: right; }
+.andon-tab, .record-tab { color: var(--danger) !important; }
+.record-tab .ic { font-size: 1.3rem; }
+/* mobile "+ Record" primary action pill in tab bar */
+@media (max-width: 900px) {
+  .tabbar button.record-tab { color: #fff; }
+  .tabbar button.record-tab .ic { background: var(--danger); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 1.05rem; margin-top: -14px; box-shadow: var(--shadow); }
+}

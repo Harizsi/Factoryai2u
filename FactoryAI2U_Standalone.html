@@ -1,3 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="description" content="FactoryAI2U — a mobile-first Manufacturing Operating System PWA (single-file build)." />
+  <meta name="author" content="FactoryAI2U" />
+  <meta property="og:title" content="FactoryAI2U — Manufacturing Operating System (CORE)" />
+  <meta property="og:description" content="Record reality at the source. Escalate by time. Drill from KPI to root cause." />
+  <meta property="og:type" content="website" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%2296%22%20fill%3D%22%230b1220%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%22150%22%20fill%3D%22none%22%20stroke%3D%22%2323c2a0%22%20stroke-width%3D%2230%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%2296%22%20fill%3D%22none%22%20stroke%3D%22%232f7bff%22%20stroke-width%3D%2226%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%2230%22%20fill%3D%22%2323c2a0%22/%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%2296%22%20fill%3D%22%230b1220%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%22150%22%20fill%3D%22none%22%20stroke%3D%22%2323c2a0%22%20stroke-width%3D%2230%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%2296%22%20fill%3D%22none%22%20stroke%3D%22%232f7bff%22%20stroke-width%3D%2226%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%2230%22%20fill%3D%22%2323c2a0%22/%3E%3C/svg%3E" />
+  <title>FactoryAI2U — Manufacturing Operating System (CORE V1.4)</title>
+  <script id="structured-data-jsonld" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "FactoryAI2U",
+    "description": "A mobile-first Manufacturing Operating System PWA (single-file standalone build).",
+    "url": "__SITE_URL__"
+  }
+  </script>
+  <style>
+/* @section: design-system — FactoryAI2U industrial control-room theme */
+:root {
+  color-scheme: dark;
+  --bg: #0b1220;
+  --bg-2: #0e1728;
+  --surface: #131f36;
+  --surface-2: #182742;
+  --surface-3: #1f3252;
+  --text: #eaf0fb;
+  --muted: #9fb0cc;
+  --faint: #6c7fa0;
+  --border: #24344f;
+  --border-strong: #33496c;
+  --primary: #2f7bff;
+  --primary-strong: #1e5fd6;
+  --accent: #23c2a0;
+
+  /* Status palette (design manual: open/active/escalated/contained/restored/overdue/closed) */
+  --st-open: #4aa3ff;
+  --st-active: #f5a623;
+  --st-escalated: #ff5a5f;
+  --st-contained: #b57bff;
+  --st-restored: #23c2a0;
+  --st-overdue: #ff3b57;
+  --st-closed: #7f8ea8;
+  --danger: #ff5a5f;
+  --warn: #f5a623;
+  --ok: #23c2a0;
+
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.35);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem;
+  --space-4: 1rem; --space-5: 1.5rem; --space-6: 2rem; --space-7: 3rem;
+  --nav-h: 60px;
+  --tab-h: 64px;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: radial-gradient(1200px 600px at 80% -10%, #16233f 0%, var(--bg) 55%) fixed, var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+h1, h2, h3, h4 { margin: 0 0 var(--space-3); line-height: 1.2; font-weight: 700; }
+h1 { font-size: 1.4rem; } h2 { font-size: 1.15rem; } h3 { font-size: 1rem; }
+p { margin: 0 0 var(--space-3); }
+a { color: var(--primary); text-decoration: none; }
+button { font-family: inherit; }
+small { color: var(--muted); }
+.mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+
+/* ---------- Layout shell ---------- */
+.app-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  height: var(--nav-h); display: flex; align-items: center; gap: var(--space-3);
+  padding: 0 var(--space-4);
+  background: rgba(11, 18, 32, 0.9); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.topbar .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .3px; }
+.topbar .brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+.topbar .spacer { flex: 1; }
+.topbar .role-chip { font-size: .78rem; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border-strong); color: var(--muted); }
+.topbar .icon-btn { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); width: 40px; height: 40px; border-radius: 10px; cursor: pointer; font-size: 1.1rem; }
+.topbar .icon-btn:hover { border-color: var(--border-strong); }
+
+.layout { flex: 1; display: flex; width: 100%; max-width: 1400px; margin: 0 auto; }
+.sidebar {
+  width: 244px; flex-shrink: 0; padding: var(--space-4) var(--space-3);
+  border-right: 1px solid var(--border); position: sticky; top: var(--nav-h);
+  height: calc(100vh - var(--nav-h)); overflow-y: auto;
+}
+.sidebar .nav-group { margin-bottom: var(--space-4); }
+.sidebar .nav-group > .label { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; color: var(--faint); padding: 0 10px 6px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 11px 12px; border-radius: 10px; border: 1px solid transparent;
+  background: none; color: var(--muted); cursor: pointer; text-align: left; font-size: .92rem;
+}
+.nav-item .ic { width: 20px; text-align: center; opacity: .9; }
+.nav-item:hover { background: var(--surface); color: var(--text); }
+.nav-item.active { background: var(--surface-2); color: var(--text); border-color: var(--border-strong); }
+.nav-item .badge { margin-left: auto; }
+
+.content { flex: 1; min-width: 0; padding: var(--space-5); padding-bottom: calc(var(--tab-h) + 24px); }
+.page-head { display: flex; align-items: flex-start; gap: var(--space-3); margin-bottom: var(--space-4); flex-wrap: wrap; }
+.page-head .titles { min-width: 0; }
+.page-head .titles p { color: var(--muted); margin: 4px 0 0; font-size: .9rem; }
+.page-head .actions { margin-left: auto; display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+/* Bottom tab bar (mobile) */
+.tabbar { display: none; }
+
+/* ---------- Cards & grids ---------- */
+.grid { display: grid; gap: var(--space-4); }
+.grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.card {
+  background: linear-gradient(180deg, var(--surface) 0%, var(--surface) 100%);
+  border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+.card.clickable { cursor: pointer; transition: border-color .12s, transform .12s; }
+.card.clickable:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+.card h3 .sub { font-weight: 400; color: var(--muted); font-size: .8rem; }
+
+.kpi { display: flex; flex-direction: column; gap: 6px; }
+.kpi .k-label { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; }
+.kpi .k-value { font-size: 1.9rem; font-weight: 800; line-height: 1; }
+.kpi .k-value small { font-size: .9rem; font-weight: 600; color: var(--muted); }
+.kpi .k-foot { font-size: .78rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.kpi.drill { cursor: pointer; }
+.kpi.drill:hover { color: var(--text); }
+.trend-up { color: var(--ok); } .trend-down { color: var(--danger); }
+
+/* ---------- Status chips ---------- */
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: .74rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; border: 1px solid transparent; text-transform: uppercase; letter-spacing: .04em; }
+.chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.chip.open { color: var(--st-open); background: rgba(74,163,255,.12); }
+.chip.active { color: var(--st-active); background: rgba(245,166,35,.12); }
+.chip.escalated { color: var(--st-escalated); background: rgba(255,90,95,.14); }
+.chip.contained { color: var(--st-contained); background: rgba(181,123,255,.14); }
+.chip.restored { color: var(--st-restored); background: rgba(35,194,160,.14); }
+.chip.overdue { color: var(--st-overdue); background: rgba(255,59,87,.16); }
+.chip.closed { color: var(--st-closed); background: rgba(127,142,168,.14); }
+.chip.rca { color: var(--st-contained); background: rgba(181,123,255,.14); }
+.chip.plain { color: var(--muted); background: var(--surface-2); border-color: var(--border); }
+.chip.crit { color: var(--danger); background: rgba(255,90,95,.14); }
+.chip.major { color: var(--warn); background: rgba(245,166,35,.14); }
+.chip.minor { color: var(--st-open); background: rgba(74,163,255,.12); }
+
+.sev-dot { display:inline-block; width:9px;height:9px;border-radius:50%; margin-right:6px; }
+
+/* ---------- Tables / lists ---------- */
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th { color: var(--muted); font-weight: 600; font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; background: var(--surface-2); position: sticky; top: 0; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--surface-2); }
+tbody tr:last-child td { border-bottom: none; }
+td .muted { color: var(--muted); }
+
+.list { display: flex; flex-direction: column; gap: var(--space-2); }
+.list-row {
+  display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer;
+}
+.list-row:hover { border-color: var(--border-strong); }
+.list-row .lr-main { min-width: 0; flex: 1; }
+.list-row .lr-main .t { font-weight: 600; }
+.list-row .lr-main .s { color: var(--muted); font-size: .82rem; }
+.list-row .lr-side { text-align: right; display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+
+/* ---------- Forms ---------- */
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-size: .82rem; color: var(--muted); font-weight: 600; }
+.field label .req { color: var(--danger); }
+input, select, textarea {
+  width: 100%; background: var(--bg-2); color: var(--text);
+  border: 1px solid var(--border-strong); border-radius: 10px; padding: 12px 12px; font-size: 1rem; min-height: 48px;
+}
+textarea { min-height: 90px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(47,123,255,.2); }
+.field .hint { font-size: .75rem; color: var(--faint); }
+.inline-fields { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 0 18px; border-radius: 10px; font-size: .95rem; font-weight: 700;
+  border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--text); cursor: pointer;
+}
+.btn:hover { border-color: var(--primary); }
+.btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+.btn.primary:hover { background: var(--primary-strong); }
+.btn.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+.btn.ghost { background: transparent; }
+.btn.sm { min-height: 38px; padding: 0 12px; font-size: .85rem; }
+.btn.block { width: 100%; }
+.btn.andon { background: linear-gradient(180deg,#ff6b6b,#ff3b57); border-color:#ff3b57; color:#fff; font-size:1.05rem; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-row { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+/* ---------- Auth / login ---------- */
+.auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: var(--space-4); }
+.auth-card { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: var(--space-6); box-shadow: var(--shadow); }
+.auth-card .brand { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+.auth-card .brand .dot { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 16px var(--accent); }
+.auth-card .tag { color: var(--muted); margin-bottom: var(--space-5); font-size: .9rem; }
+.role-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: var(--space-3) 0 var(--space-4); }
+.role-pick .rp {
+  padding: 12px; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--bg-2);
+  cursor: pointer; text-align: left; color: var(--text);
+}
+.role-pick .rp:hover { border-color: var(--primary); }
+.role-pick .rp.sel { border-color: var(--primary); background: rgba(47,123,255,.12); }
+.role-pick .rp.sel::after { content: "✓"; position: absolute; top: 8px; right: 10px; color: var(--primary); font-weight: 800; }
+.role-pick .rp { position: relative; }
+.login-hint { text-align: center; color: var(--muted); font-size: .82rem; margin-bottom: 10px; }
+.preview-warn { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: rgba(245,166,35,.12); border: 1px solid var(--warn); color: #ffdca0; font-size: .78rem; line-height: 1.45; }
+.role-pick .rp .rn { font-weight: 700; font-size: .92rem; }
+.role-pick .rp .rd { font-size: .72rem; color: var(--muted); }
+
+/* ---------- Misc ---------- */
+.section-title { display: flex; align-items: center; gap: 10px; margin: var(--space-5) 0 var(--space-3); }
+.section-title h2 { margin: 0; }
+.section-title .line { flex: 1; height: 1px; background: var(--border); }
+.muted { color: var(--muted); }
+.pill-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: var(--space-4); background: var(--surface); padding: 6px; border-radius: 12px; border: 1px solid var(--border); }
+.pill-tabs button { flex: 1; min-width: max-content; border: none; background: none; color: var(--muted); padding: 9px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .88rem; }
+.pill-tabs button.active { background: var(--surface-3); color: var(--text); }
+.empty { text-align: center; padding: var(--space-6); color: var(--faint); border: 1px dashed var(--border-strong); border-radius: var(--radius); }
+.empty .big { font-size: 2rem; margin-bottom: 8px; }
+.breadcrumbs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: .85rem; color: var(--muted); margin-bottom: var(--space-4); }
+.breadcrumbs button { background: none; border: none; color: var(--primary); cursor: pointer; font-size: .85rem; padding: 0; }
+.breadcrumbs .sep { color: var(--faint); }
+.stat-inline { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+.stat-inline .si { display: flex; flex-direction: column; }
+.stat-inline .si .v { font-size: 1.3rem; font-weight: 800; }
+.stat-inline .si .l { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.bar { height: 8px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.bar > span { display: block; height: 100%; background: var(--accent); }
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li { position: relative; padding: 0 0 var(--space-4) 24px; border-left: 2px solid var(--border-strong); }
+.timeline li:last-child { border-left-color: transparent; }
+.timeline li::before { content: ""; position: absolute; left: -7px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); border: 2px solid var(--bg); }
+.timeline li .tl-t { font-weight: 600; }
+.timeline li .tl-m { font-size: .82rem; color: var(--muted); }
+.kv { display: grid; grid-template-columns: 150px 1fr; gap: 8px 14px; font-size: .9rem; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; }
+
+/* Toast / modal / banners */
+.toast-host { position: fixed; bottom: calc(var(--tab-h) + 16px); left: 50%; transform: translateX(-50%); z-index: 90; display: flex; flex-direction: column; gap: 8px; width: min(420px, 92vw); }
+.toast { background: var(--surface-3); border: 1px solid var(--border-strong); border-left: 4px solid var(--accent); padding: 12px 14px; border-radius: 10px; box-shadow: var(--shadow); font-size: .9rem; animation: slideup .2s ease; }
+.toast.err { border-left-color: var(--danger); }
+.toast.warn { border-left-color: var(--warn); }
+@keyframes slideup { from { opacity: 0; transform: translateY(10px); } }
+.modal-host { position: fixed; inset: 0; z-index: 100; background: rgba(3,7,16,.7); display: grid; place-items: center; padding: var(--space-4); overflow: auto; }
+/* Modal is a flex column: head + scrollable body + always-visible sticky footer.
+   Height is capped to the *visible* viewport (100dvh) so the footer/Save button
+   is never pushed below the fold on mobile browsers with dynamic toolbars. */
+.modal { background: var(--surface); border: 1px solid var(--border-strong); border-radius: 16px; width: min(640px, 100%); max-height: calc(100dvh - 2 * var(--space-4)); display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow); }
+.modal .m-head { flex: 0 0 auto; display: flex; align-items: center; padding: var(--space-4); border-bottom: 1px solid var(--border); background: var(--surface); }
+.modal .m-head h2 { margin: 0; font-size: 1.1rem; } .modal .m-head .x { margin-left: auto; }
+.modal .m-body { flex: 1 1 auto; padding: var(--space-4); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.modal .m-foot { flex: 0 0 auto; padding: var(--space-4); padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: flex-end; background: var(--surface); }
+.modal .m-foot .btn { min-height: 44px; }
+.net-banner { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 39; text-align: center; padding: 6px; font-size: .8rem; font-weight: 600; background: var(--warn); color: #201400; }
+.net-banner.offline { background: var(--faint); color: #06101f; }
+
+/* ---------- Responsive: mobile ---------- */
+@media (max-width: 900px) {
+  .grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
+  .sidebar { display: none; }
+  .content { padding: var(--space-4); }
+  .form-grid { grid-template-columns: 1fr; }
+  .kv { grid-template-columns: 120px 1fr; }
+  .tabbar {
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 45; height: var(--tab-h);
+    background: rgba(11,18,32,.96); backdrop-filter: blur(10px); border-top: 1px solid var(--border);
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  .tabbar button { flex: 1; background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: .66rem; cursor: pointer; padding: 4px 2px; border-radius: 8px; }
+  .tabbar button .ic { font-size: 1.25rem; }
+  .tabbar button.active { color: var(--primary); }
+  .tabbar button.andon-tab { color: var(--danger); }
+}
+@media (max-width: 560px) {
+  .grid.cols-4, .grid.cols-3, .grid.cols-2 { grid-template-columns: 1fr; }
+  .role-pick { grid-template-columns: 1fr; }
+  .kv { grid-template-columns: 1fr; gap: 2px 0; }
+  .kv dt { margin-top: 8px; }
+  h1 { font-size: 1.2rem; }
+  .page-head .actions { width: 100%; }
+}
+@media (min-width: 901px) { .mobile-only { display: none !important; } }
+
+/* dvh fallback for older browsers */
+@supports not (height: 100dvh) {
+  .modal { max-height: calc(100vh - 2 * var(--space-4)); }
+}
+
+/* Admin CRUD affordances */
+.crud-bar { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin: 6px 0 10px; }
+.crud-bar .btn { min-height: 40px; }
+.row-actions { display: flex; gap: 6px; justify-content: flex-end; white-space: nowrap; }
+.row-actions .btn { min-height: 34px; padding: 4px 10px; font-size: .8rem; }
+table td.row-actions-cell { text-align: right; }
+.andon-tab, .record-tab { color: var(--danger) !important; }
+.record-tab .ic { font-size: 1.3rem; }
+/* mobile "+ Record" primary action pill in tab bar */
+@media (max-width: 900px) {
+  .tabbar button.record-tab { color: #fff; }
+  .tabbar button.record-tab .ic { background: var(--danger); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: 1.05rem; margin-top: -14px; box-shadow: var(--shadow); }
+}
+
+  </style>
+<body>
+  <div id="app" aria-live="polite"></div>
+  <div id="net-banner" class="net-banner" hidden></div>
+  <div id="toast-host" class="toast-host" aria-live="assertive"></div>
+  <div id="modal-host" class="modal-host" hidden></div>
+
+  <script>
+  (function () {
+    try {
+      var manifest = { name:"FactoryAI2U — Manufacturing Operating System", short_name:"FactoryAI2U",
+        description:"Mobile-first manufacturing PWA (single-file standalone).", start_url:".", scope:".",
+        display:"standalone", orientation:"any", background_color:"#0b1220", theme_color:"#0b1220",
+        icons:[{ src:"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%2296%22%20fill%3D%22%230b1220%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%22150%22%20fill%3D%22none%22%20stroke%3D%22%2323c2a0%22%20stroke-width%3D%2230%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%2296%22%20fill%3D%22none%22%20stroke%3D%22%232f7bff%22%20stroke-width%3D%2226%22/%3E%3Ccircle%20cx%3D%22256%22%20cy%3D%22256%22%20r%3D%2230%22%20fill%3D%22%2323c2a0%22/%3E%3C/svg%3E", sizes:"512x512", type:"image/svg+xml", purpose:"any maskable" }] };
+      var blob = new Blob([JSON.stringify(manifest)], { type:"application/manifest+json" });
+      var link = document.createElement("link"); link.rel="manifest"; link.href=URL.createObjectURL(blob);
+      document.head.appendChild(link);
+    } catch (e) {}
+  })();
+  </script>
+  <script>
+/* @section: data-layer — FactoryAI2U CORE data model, seed data & persistence
+   NOTE (up to CORE V1.5 — database backend setup): This prototype persists to
+   browser localStorage only. No live database is connected yet. Admin > Data
+   Backend holds credentials for the CORE V1.5 shared-database connection but
+   does NOT transmit or store secrets remotely at this stage. */
+(function (global) {
+  'use strict';
+
+  var LS_KEY = 'factoryai2u.core.v1';
+  var CFG_KEY = 'factoryai2u.dbconfig.v1';
+
+  /* ---------- Roles & permissions (Design Manual §5) ---------- */
+  var ROLES = {
+    operator:     { name: 'Operator',      philosophy: 'Record → Report → Andon',                     mgmt: false },
+    supervisor:   { name: 'Supervisor',    philosophy: 'Monitor → Respond → Control → Escalate',      mgmt: false },
+    qa:           { name: 'QA / QC',       philosophy: 'Detect → Contain → Investigate → Correct',    mgmt: false },
+    maintenance:  { name: 'Maintenance',   philosophy: 'Respond → Diagnose → Restore → Prevent',      mgmt: false },
+    plant_head:   { name: 'Plant Head',    philosophy: 'See → Drill → Decide → Follow Up',            mgmt: true },
+    division_head:{ name: 'Division Head', philosophy: 'Compare → Systemic Loss → Improvement',       mgmt: true },
+    ceo:          { name: 'CEO',           philosophy: 'Business Impact → Drill → Decide',            mgmt: true },
+    admin:        { name: 'Admin',         philosophy: 'Configure → Govern → Secure',                 mgmt: false }
+  };
+
+  // Menu access per role. Management roles never get working-level entry menus (Manual §5 critical rule).
+  var MENUS = {
+    operator:      ['dashboard','production','breakdown','quality','myitems','calculators'],
+    supervisor:    ['dashboard','breakdown','quality','production','escalations','actions','myitems','calculators'],
+    qa:            ['dashboard','quality','actions','rca','myitems','calculators'],
+    maintenance:   ['dashboard','breakdown','actions','myitems','calculators'],
+    plant_head:    ['dashboard','exceptions','loss','drilldown','actions','audit','calculators'],
+    division_head: ['dashboard','exceptions','loss','drilldown','actions','audit','calculators'],
+    ceo:           ['dashboard','exceptions','loss','drilldown','audit','calculators'],
+    admin:         ['dashboard','admin','audit','calculators']
+  };
+
+  /* ---------- Escalation rules (Manual §6, §7) ---------- */
+  var ESCALATION = {
+    breakdown: [
+      { min: 5,  to: 'Supervisor' },
+      { min: 10, to: 'Production Head + Plant Head' },
+      { min: 30, to: 'Division Head' },
+      { min: 60, to: 'CEO' }
+    ],
+    quality: [
+      { min: 10,   to: 'Supervisor' },
+      { min: 60,   to: 'QA Head' },
+      { min: 480,  to: 'Quality Division Head' },  // 1 shift ~ 8h
+      { min: 1440, to: 'CEO' }                     // 1 day
+    ]
+  };
+
+  var BREAKDOWN_CATEGORIES = ['Major','Minor','Mechanical','Electrical','Pneumatic','Hydraulic','Data Communication','Intermittent','Auto Stop','Manual Stop','Emergency Stop','Sudden Stop'];
+  var BREAKDOWN_SYMPTOMS = ['Alert','Alarm','Abnormal Noise','Appearance','Vibration'];
+  var QUALITY_CLASS = ['Safety Critical','Functional','Fitting','Appearance','Reliability','Dimensional'];
+  var QUALITY_SEVERITY = ['Critical','Major','Minor','Observation'];
+  var RUNNING_MODES = ['Normal Production','Trial','Auto','Manual'];
+
+  function uid(p) { return (p || 'id') + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function nowISO() { return new Date().toISOString(); }
+  function minAgo(m) { return new Date(Date.now() - m * 60000).toISOString(); }
+
+  /* ---------- Seed (neutral fictional demo data — Manual §11) ---------- */
+  function seed() {
+    var users = [
+      { id: 'u1', name: 'Aiman R.',   role: 'operator',      shift: 'A', scope: 'P1' },
+      { id: 'u2', name: 'Siti N.',    role: 'supervisor',    shift: 'A', scope: 'P1' },
+      { id: 'u3', name: 'Ravi K.',    role: 'qa',            shift: 'A', scope: 'P1' },
+      { id: 'u4', name: 'Chong W.',   role: 'maintenance',   shift: 'A', scope: 'P1' },
+      { id: 'u5', name: 'Faridah M.', role: 'plant_head',    shift: '-', scope: 'P1' },
+      { id: 'u6', name: 'Daniel T.',  role: 'division_head', shift: '-', scope: 'D1' },
+      { id: 'u7', name: 'Grace L.',   role: 'ceo',           shift: '-', scope: 'ALL' },
+      { id: 'u8', name: 'Admin',      role: 'admin',         shift: '-', scope: 'ALL' }
+    ];
+
+    var org = {
+      company: 'Generic Manufacturing Co.',
+      divisions: [
+        { id: 'D1', name: 'Division North' },
+        { id: 'D2', name: 'Division South' }
+      ],
+      plants: [
+        { id: 'P1', name: 'Plant Alpha', division: 'D1' },
+        { id: 'P2', name: 'Plant Beta',  division: 'D2' }
+      ],
+      areas: [
+        { id: 'A1', name: 'Machining',  plant: 'P1' },
+        { id: 'A2', name: 'Assembly',   plant: 'P1' },
+        { id: 'A3', name: 'Moulding',   plant: 'P2' }
+      ],
+      stages: [
+        { id: 'S1', name: 'CNC Turning', area: 'A1' },
+        { id: 'S2', name: 'Milling',     area: 'A1' },
+        { id: 'S3', name: 'Final Assy',  area: 'A2' },
+        { id: 'S4', name: 'Injection',   area: 'A3' }
+      ],
+      lines: [
+        { id: 'L1', name: 'Line 1', stage: 'S1' },
+        { id: 'L2', name: 'Line 2', stage: 'S2' },
+        { id: 'L3', name: 'Line 3', stage: 'S3' },
+        { id: 'L4', name: 'Line 4', stage: 'S4' }
+      ],
+      machines: [
+        { id: 'M1', name: 'CNC-01', line: 'L1', type: 'CNC Lathe' },
+        { id: 'M2', name: 'MILL-02', line: 'L2', type: 'VMC' },
+        { id: 'M3', name: 'ASSY-03', line: 'L3', type: 'Assembly Cell' },
+        { id: 'M4', name: 'IMM-04', line: 'L4', type: 'Injection Moulder' }
+      ],
+      products: [
+        { id: 'PR1', part: 'Shaft-A', partNo: 'SA-1001', model: 'MX', customer: 'Customer Blue' },
+        { id: 'PR2', part: 'Housing-B', partNo: 'HB-2002', model: 'MX', customer: 'Customer Blue' },
+        { id: 'PR3', part: 'Cover-C', partNo: 'CC-3003', model: 'GT', customer: 'Customer Green' }
+      ],
+      shifts: [
+        { id: 'A', name: 'Shift A', start: '07:00', end: '15:00' },
+        { id: 'B', name: 'Shift B', start: '15:00', end: '23:00' },
+        { id: 'C', name: 'Shift C', start: '23:00', end: '07:00' }
+      ]
+    };
+
+    var kpiTargets = { oee: 85, quality: 99, fpy: 97, availability: 90, performance: 95 };
+
+    // Standard rates (Manual §10 financial rule: configurable, demo values are NOT real costing)
+    var rates = { downtimeCostPerMin: 8.5, scrapCostPerUnit: 4.2, ngReworkPerUnit: 1.8, currency: 'USD' };
+
+    var production = [
+      prod('L1','M1','PR1','A','u1', 620, 604, 16, 640, minAgo(300)),
+      prod('L2','M2','PR2','A','u1', 480, 470, 10, 500, minAgo(220)),
+      prod('L3','M3','PR3','A','u1', 300, 291, 9, 320, minAgo(120)),
+      prod('L4','M4','PR2','A','u1', 540, 520, 20, 560, minAgo(60))
+    ];
+
+    var breakdowns = [
+      bd('M1','L1','PR1','u1','A', 'Major','Abnormal Noise', 604, 45, 24, 'Spindle noise then stop', minAgo(52), 'escalated', null),
+      bd('M2','L2','PR2','u1','A', 'Electrical','Alarm', 470, 12, 8, 'Servo alarm', minAgo(18), 'active', null),
+      bd('M4','L4','PR2','u1','A', 'Pneumatic','Alert', 520, 30, 15, 'Air pressure drop', minAgo(140), 'restored', minAgo(105))
+    ];
+
+    var quality = [
+      qa_('L1','PR1','u1','A', 'Dimensional','Major', 120, 14, 'M1', 'CNC Turning', 'OD out of tolerance', minAgo(70), 'containment'),
+      qa_('L3','PR3','u1','A', 'Appearance','Minor', 40, 6, 'M3', 'Final Assy', 'Scratch on cover', minAgo(200), 'rca'),
+      qa_('L2','PR2','u1','A', 'Functional','Critical', 200, 22, 'M2', 'Milling', 'Threaded hole missing', minAgo(30), 'open')
+    ];
+
+    var actions = [
+      act('RCA / CA', 'Replace spindle bearing on CNC-01', 'u4', 'M1', addDays(1), 'open', 'breakdown', breakdowns[0].id),
+      act('Corrective', 'Recalibrate OD gauge & 100% sort suspect lot', 'u3', 'M1', addDays(-1), 'overdue', 'quality', quality[0].id),
+      act('Preventive', 'Add air-pressure sensor alarm threshold', 'u4', 'M4', addDays(3), 'open', 'breakdown', breakdowns[2].id)
+    ];
+
+    var audit = [
+      log('u1','CREATE','Production event L1/CNC-01 recorded', minAgo(300)),
+      log('u1','CREATE','Breakdown raised on CNC-01 (Major)', minAgo(52)),
+      log('u2','ESCALATE','CNC-01 breakdown escalated to Plant Head', minAgo(42)),
+      log('u3','CREATE','Quality alert on Shaft-A (Dimensional/Major)', minAgo(70)),
+      log('u8','CONFIG','KPI targets updated (OEE 85%)', minAgo(1440))
+    ];
+
+    return {
+      version: 1, users: users, org: org, kpiTargets: kpiTargets, rates: rates,
+      config: { breakdownCategories: BREAKDOWN_CATEGORIES.slice(), breakdownSymptoms: BREAKDOWN_SYMPTOMS.slice(),
+                qualityClass: QUALITY_CLASS.slice(), qualitySeverity: QUALITY_SEVERITY.slice(),
+                escalation: JSON.parse(JSON.stringify(ESCALATION)) },
+      production: production, breakdowns: breakdowns, quality: quality,
+      actions: actions, rca: [], audit: audit, queue: []
+    };
+
+    function prod(line, machine, product, shift, by, plan, good, ng, total, ts) {
+      return { id: uid('prd'), line: line, machine: machine, product: product, shift: shift, by: by,
+               plan: plan, good: good, ng: ng, total: total, ts: ts };
+    }
+    function bd(machine, line, product, by, shift, cat, sym, outAt, affected, dtMin, notes, start, status, restored) {
+      return { id: uid('bd'), machine: machine, line: line, product: product, by: by, shift: shift,
+               runningMode: 'Normal Production', category: cat, symptom: sym, outputAtDowntime: outAt,
+               affectedQty: affected, downtimeMin: dtMin, notes: notes, start: start, status: status,
+               restoredAt: restored, escalationLevel: 0 };
+    }
+    function qa_(line, product, by, shift, cls, sev, suspect, confirmedNG, machine, process, desc, ts, status) {
+      return { id: uid('ql'), line: line, product: product, by: by, shift: shift, classification: cls,
+               severity: sev, suspectQty: suspect, confirmedNG: confirmedNG, machine: machine, process: process,
+               defectDesc: desc, ts: ts, status: status };
+    }
+    function act(type, desc, owner, machine, due, status, srcType, srcId) {
+      return { id: uid('act'), type: type, desc: desc, owner: owner, machine: machine, due: due,
+               status: status, srcType: srcType, srcId: srcId, created: nowISO() };
+    }
+    function log(uid_, action, detail, ts) { return { id: uid('lg'), user: uid_, action: action, detail: detail, ts: ts }; }
+    function addDays(d) { var x = new Date(); x.setDate(x.getDate() + d); return x.toISOString(); }
+  }
+
+  /* ---------- Store ---------- */
+  var _state = null;
+  // Expose org children (plants/areas/stages/lines/machines/products/shifts/divisions)
+  // as top-level references so both s.org.* (display lookups) and s.* (forms & CRUD) work.
+  function bindOrg(st) {
+    if (!st || !st.org) return st;
+    var keys = ['divisions','plants','areas','stages','lines','machines','products','shifts'];
+    keys.forEach(function (k) { if (!st.org[k]) st.org[k] = []; st[k] = st.org[k]; });
+    return st;
+  }
+  function load() {
+    if (_state) return _state;
+    try { var raw = localStorage.getItem(LS_KEY); if (raw) { _state = bindOrg(JSON.parse(raw)); return _state; } } catch (e) {}
+    _state = bindOrg(seed()); save(); return _state;
+  }
+  function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(_state)); } catch (e) {} }
+  function reset() { _state = bindOrg(seed()); save(); return _state; }
+
+  function addAudit(user, action, detail) {
+    load().audit.unshift({ id: uid('lg'), user: user, action: action, detail: detail, ts: nowISO() });
+    save();
+  }
+
+  /* ---------- DB config (CORE V1.5 — database backend setup) ---------- */
+  function getDbConfig() {
+    try { var raw = localStorage.getItem(CFG_KEY); if (raw) return JSON.parse(raw); } catch (e) {}
+    return { provider: '', url: '', anonKey: '', serviceRoleHint: '', dbName: '', region: '', savedAt: '', connected: false };
+  }
+  function saveDbConfig(cfg) {
+    cfg.savedAt = nowISO(); cfg.connected = false; // live connection is activated in the CORE V1.5 backend phase
+    try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch (e) {}
+    return cfg;
+  }
+
+  /* ---------- Lookups ---------- */
+  function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
+  function name(kind, id) {
+    var s = load().org, m;
+    if (kind === 'machine') { m = byId(s.machines, id); return m ? m.name : id; }
+    if (kind === 'line')    { m = byId(s.lines, id);    return m ? m.name : id; }
+    if (kind === 'product') { m = byId(s.products, id); return m ? (m.part + ' (' + m.partNo + ')') : id; }
+    if (kind === 'user')    { m = byId(s.users, id);    return m ? m.name : id; }
+    if (kind === 'plant')   { m = byId(s.plants, id);   return m ? m.name : id; }
+    return id;
+  }
+
+  global.DB = {
+    LS_KEY: LS_KEY, ROLES: ROLES, MENUS: MENUS, ESCALATION: ESCALATION,
+    BREAKDOWN_CATEGORIES: BREAKDOWN_CATEGORIES, BREAKDOWN_SYMPTOMS: BREAKDOWN_SYMPTOMS,
+    QUALITY_CLASS: QUALITY_CLASS, QUALITY_SEVERITY: QUALITY_SEVERITY, RUNNING_MODES: RUNNING_MODES,
+    load: load, save: save, reset: reset, addAudit: addAudit,
+    getDbConfig: getDbConfig, saveDbConfig: saveDbConfig,
+    uid: uid, nowISO: nowISO, minAgo: minAgo, byId: byId, name: name
+  };
+})(window);
+
+  </script>
+  <script>
+/* @section: calculators — Free manufacturing performance calculators
+   Categories: Production, Quality, Equipment, Workers, Material, Financial.
+   Each calculator declares inputs {key,label,unit,def} and a compute() that
+   returns {value, unit, note} plus optional extra rows. Formulas are standard,
+   widely-used manufacturing definitions. */
+(function (global) {
+  'use strict';
+
+  function pct(n) { return (isFinite(n) ? (Math.round(n * 100) / 100) : 0); }
+  function safe(n) { n = parseFloat(n); return isNaN(n) ? 0 : n; }
+  function div(a, b) { return b === 0 ? 0 : a / b; }
+
+  var CALCS = [
+    /* ---------------- PRODUCTION ---------------- */
+    {
+      id: 'oee', cat: 'Production', name: 'OEE (Overall Equipment Effectiveness)',
+      desc: 'Availability × Performance × Quality — the headline production KPI.',
+      inputs: [
+        { key: 'planned', label: 'Planned Production Time', unit: 'min', def: 480 },
+        { key: 'downtime', label: 'Downtime', unit: 'min', def: 45 },
+        { key: 'ideal', label: 'Ideal Cycle Time', unit: 'sec/pc', def: 30 },
+        { key: 'total', label: 'Total Units Produced', unit: 'pcs', def: 820 },
+        { key: 'good', label: 'Good Units', unit: 'pcs', def: 800 }
+      ],
+      compute: function (v) {
+        var runTime = safe(v.planned) - safe(v.downtime);
+        var avail = div(runTime, safe(v.planned));
+        var perf = div((safe(v.ideal) / 60) * safe(v.total), runTime);
+        var qual = div(safe(v.good), safe(v.total));
+        var oee = avail * perf * qual;
+        return { value: pct(oee * 100), unit: '%',
+          rows: [
+            ['Availability', pct(avail * 100) + ' %'],
+            ['Performance', pct(perf * 100) + ' %'],
+            ['Quality', pct(qual * 100) + ' %']
+          ], note: 'World-class benchmark ≈ 85%.' };
+      }
+    },
+    {
+      id: 'availability', cat: 'Production', name: 'Availability',
+      desc: 'Run time as a share of planned production time.',
+      inputs: [
+        { key: 'planned', label: 'Planned Time', unit: 'min', def: 480 },
+        { key: 'downtime', label: 'Downtime', unit: 'min', def: 60 }
+      ],
+      compute: function (v) { var a = div(safe(v.planned) - safe(v.downtime), safe(v.planned));
+        return { value: pct(a * 100), unit: '%', note: 'Run Time ÷ Planned Time.' }; }
+    },
+    {
+      id: 'performance', cat: 'Production', name: 'Performance Efficiency',
+      desc: 'Actual output speed vs ideal cycle time.',
+      inputs: [
+        { key: 'ideal', label: 'Ideal Cycle Time', unit: 'sec/pc', def: 30 },
+        { key: 'total', label: 'Total Units', unit: 'pcs', def: 820 },
+        { key: 'runtime', label: 'Run Time', unit: 'min', def: 420 }
+      ],
+      compute: function (v) { var p = div((safe(v.ideal) / 60) * safe(v.total), safe(v.runtime));
+        return { value: pct(p * 100), unit: '%', note: '(Ideal Cycle × Total) ÷ Run Time.' }; }
+    },
+    {
+      id: 'takt', cat: 'Production', name: 'Takt Time',
+      desc: 'Pace of production required to meet customer demand.',
+      inputs: [
+        { key: 'avail', label: 'Available Time', unit: 'min', def: 450 },
+        { key: 'demand', label: 'Customer Demand', unit: 'pcs', def: 900 }
+      ],
+      compute: function (v) { var t = div(safe(v.avail) * 60, safe(v.demand));
+        return { value: pct(t), unit: 'sec/pc', note: 'One unit must complete every ' + pct(t) + ' s to meet demand.' }; }
+    },
+    {
+      id: 'cycletime', cat: 'Production', name: 'Cycle Time & Throughput',
+      desc: 'Average time per unit and units per hour.',
+      inputs: [
+        { key: 'runtime', label: 'Run Time', unit: 'min', def: 420 },
+        { key: 'units', label: 'Units Produced', unit: 'pcs', def: 820 }
+      ],
+      compute: function (v) { var ct = div(safe(v.runtime) * 60, safe(v.units)); var tph = div(safe(v.units), safe(v.runtime) / 60);
+        return { value: pct(ct), unit: 'sec/pc', rows: [['Throughput', pct(tph) + ' pcs/hr']], note: 'Run Time ÷ Units.' }; }
+    },
+    {
+      id: 'capacity', cat: 'Production', name: 'Capacity Utilisation',
+      desc: 'Actual output vs maximum possible output.',
+      inputs: [
+        { key: 'actual', label: 'Actual Output', unit: 'pcs', def: 820 },
+        { key: 'max', label: 'Maximum Capacity', unit: 'pcs', def: 1000 }
+      ],
+      compute: function (v) { var u = div(safe(v.actual), safe(v.max));
+        return { value: pct(u * 100), unit: '%', note: 'Actual ÷ Maximum Capacity.' }; }
+    },
+
+    /* ---------------- QUALITY ---------------- */
+    {
+      id: 'fpy', cat: 'Quality', name: 'First Pass Yield (FPY)',
+      desc: 'Units passing without rework, as a share of units started.',
+      inputs: [
+        { key: 'started', label: 'Units Started', unit: 'pcs', def: 1000 },
+        { key: 'rework', label: 'Reworked Units', unit: 'pcs', def: 25 },
+        { key: 'scrap', label: 'Scrapped Units', unit: 'pcs', def: 15 }
+      ],
+      compute: function (v) { var good = safe(v.started) - safe(v.rework) - safe(v.scrap); var y = div(good, safe(v.started));
+        return { value: pct(y * 100), unit: '%', note: '(Started − Rework − Scrap) ÷ Started.' }; }
+    },
+    {
+      id: 'ppm', cat: 'Quality', name: 'Defect Rate (PPM)',
+      desc: 'Defective parts per million — supplier/quality standard.',
+      inputs: [
+        { key: 'defects', label: 'Defective Units', unit: 'pcs', def: 12 },
+        { key: 'total', label: 'Total Inspected', unit: 'pcs', def: 5000 }
+      ],
+      compute: function (v) { var ppm = div(safe(v.defects), safe(v.total)) * 1e6;
+        return { value: Math.round(ppm), unit: 'PPM', rows: [['Defect %', pct(div(safe(v.defects), safe(v.total)) * 100) + ' %']], note: '(Defects ÷ Total) × 1,000,000.' }; }
+    },
+    {
+      id: 'scraprate', cat: 'Quality', name: 'Scrap & Rework Rate',
+      desc: 'Share of production scrapped or reworked.',
+      inputs: [
+        { key: 'scrap', label: 'Scrap Units', unit: 'pcs', def: 15 },
+        { key: 'rework', label: 'Rework Units', unit: 'pcs', def: 25 },
+        { key: 'total', label: 'Total Produced', unit: 'pcs', def: 1000 }
+      ],
+      compute: function (v) { var s = div(safe(v.scrap), safe(v.total)); var r = div(safe(v.rework), safe(v.total));
+        return { value: pct(s * 100), unit: '% scrap', rows: [['Rework Rate', pct(r * 100) + ' %'], ['Combined', pct((s + r) * 100) + ' %']], note: 'Scrap ÷ Total.' }; }
+    },
+    {
+      id: 'sigma', cat: 'Quality', name: 'Process Sigma (approx.)',
+      desc: 'Approximate sigma level from defect rate (DPMO).',
+      inputs: [
+        { key: 'defects', label: 'Defects', unit: 'ea', def: 12 },
+        { key: 'units', label: 'Units', unit: 'pcs', def: 5000 },
+        { key: 'opps', label: 'Opportunities / Unit', unit: 'ea', def: 1 }
+      ],
+      compute: function (v) {
+        var dpmo = div(safe(v.defects), safe(v.units) * safe(v.opps)) * 1e6;
+        var yieldp = 1 - div(safe(v.defects), safe(v.units) * safe(v.opps));
+        // Approximate sigma: normsinv(yield) + 1.5 shift
+        var sigma = approxSigma(yieldp) + 1.5;
+        return { value: pct(sigma), unit: 'σ', rows: [['DPMO', Math.round(dpmo)], ['Yield', pct(yieldp * 100) + ' %']], note: 'Includes 1.5σ long-term shift.' };
+      }
+    },
+    {
+      id: 'cpk', cat: 'Quality', name: 'Process Capability (Cp / Cpk)',
+      desc: 'Capability of a process to meet specification limits.',
+      inputs: [
+        { key: 'usl', label: 'Upper Spec Limit', unit: '', def: 10.5 },
+        { key: 'lsl', label: 'Lower Spec Limit', unit: '', def: 9.5 },
+        { key: 'mean', label: 'Process Mean', unit: '', def: 10.1 },
+        { key: 'sd', label: 'Std Deviation (σ)', unit: '', def: 0.12 }
+      ],
+      compute: function (v) {
+        var cp = div(safe(v.usl) - safe(v.lsl), 6 * safe(v.sd));
+        var cpu = div(safe(v.usl) - safe(v.mean), 3 * safe(v.sd));
+        var cpl = div(safe(v.mean) - safe(v.lsl), 3 * safe(v.sd));
+        var cpk = Math.min(cpu, cpl);
+        return { value: pct(cpk), unit: 'Cpk', rows: [['Cp', pct(cp)], ['Cpu', pct(cpu)], ['Cpl', pct(cpl)]], note: 'Cpk ≥ 1.33 generally acceptable.' };
+      }
+    },
+
+    /* ---------------- EQUIPMENT ---------------- */
+    {
+      id: 'mtbf', cat: 'Equipment', name: 'MTBF (Mean Time Between Failures)',
+      desc: 'Average operating time between breakdowns — reliability.',
+      inputs: [
+        { key: 'optime', label: 'Total Operating Time', unit: 'hrs', def: 720 },
+        { key: 'failures', label: 'Number of Failures', unit: 'ea', def: 6 }
+      ],
+      compute: function (v) { var m = div(safe(v.optime), safe(v.failures));
+        return { value: pct(m), unit: 'hrs', note: 'Operating Time ÷ Failures. Higher is better.' }; }
+    },
+    {
+      id: 'mttr', cat: 'Equipment', name: 'MTTR (Mean Time To Repair)',
+      desc: 'Average time to restore equipment after failure — maintainability.',
+      inputs: [
+        { key: 'repair', label: 'Total Repair Time', unit: 'hrs', def: 9 },
+        { key: 'failures', label: 'Number of Repairs', unit: 'ea', def: 6 }
+      ],
+      compute: function (v) { var m = div(safe(v.repair), safe(v.failures));
+        return { value: pct(m), unit: 'hrs', note: 'Repair Time ÷ Repairs. Lower is better.' }; }
+    },
+    {
+      id: 'avail_eq', cat: 'Equipment', name: 'Equipment Availability (MTBF/MTTR)',
+      desc: 'Uptime from reliability & maintainability.',
+      inputs: [
+        { key: 'mtbf', label: 'MTBF', unit: 'hrs', def: 120 },
+        { key: 'mttr', label: 'MTTR', unit: 'hrs', def: 1.5 }
+      ],
+      compute: function (v) { var a = div(safe(v.mtbf), safe(v.mtbf) + safe(v.mttr));
+        return { value: pct(a * 100), unit: '%', note: 'MTBF ÷ (MTBF + MTTR).' }; }
+    },
+    {
+      id: 'downtimecost', cat: 'Equipment', name: 'Downtime Loss',
+      desc: 'Lost units and cost from equipment downtime.',
+      inputs: [
+        { key: 'downtime', label: 'Downtime', unit: 'min', def: 45 },
+        { key: 'cycle', label: 'Ideal Cycle Time', unit: 'sec/pc', def: 30 },
+        { key: 'rate', label: 'Cost per Minute', unit: '$/min', def: 8.5 }
+      ],
+      compute: function (v) { var lost = div(safe(v.downtime) * 60, safe(v.cycle)); var cost = safe(v.downtime) * safe(v.rate);
+        return { value: Math.round(lost), unit: 'units lost', rows: [['Downtime Cost', '$' + pct(cost)]], note: 'Lost units = Downtime ÷ Cycle Time.' }; }
+    },
+
+    /* ---------------- WORKERS ---------------- */
+    {
+      id: 'labor_prod', cat: 'Workers', name: 'Labour Productivity',
+      desc: 'Output per labour hour.',
+      inputs: [
+        { key: 'output', label: 'Total Output', unit: 'pcs', def: 2400 },
+        { key: 'hours', label: 'Total Labour Hours', unit: 'hrs', def: 160 }
+      ],
+      compute: function (v) { var p = div(safe(v.output), safe(v.hours));
+        return { value: pct(p), unit: 'pcs/hr', note: 'Output ÷ Labour Hours.' }; }
+    },
+    {
+      id: 'labor_eff', cat: 'Workers', name: 'Labour Efficiency',
+      desc: 'Standard (earned) hours vs actual hours worked.',
+      inputs: [
+        { key: 'std', label: 'Standard Hours Earned', unit: 'hrs', def: 150 },
+        { key: 'actual', label: 'Actual Hours Worked', unit: 'hrs', def: 160 }
+      ],
+      compute: function (v) { var e = div(safe(v.std), safe(v.actual));
+        return { value: pct(e * 100), unit: '%', note: 'Standard Hours ÷ Actual Hours.' }; }
+    },
+    {
+      id: 'absentee', cat: 'Workers', name: 'Absenteeism Rate',
+      desc: 'Lost days as a share of available working days.',
+      inputs: [
+        { key: 'lost', label: 'Days Absent', unit: 'days', def: 8 },
+        { key: 'avail', label: 'Available Work Days', unit: 'days', def: 440 }
+      ],
+      compute: function (v) { var a = div(safe(v.lost), safe(v.avail));
+        return { value: pct(a * 100), unit: '%', note: 'Absent Days ÷ Available Days.' }; }
+    },
+    {
+      id: 'utilisation', cat: 'Workers', name: 'Worker Utilisation',
+      desc: 'Productive time vs total time on shift.',
+      inputs: [
+        { key: 'prod', label: 'Productive Time', unit: 'min', def: 400 },
+        { key: 'total', label: 'Total Shift Time', unit: 'min', def: 480 }
+      ],
+      compute: function (v) { var u = div(safe(v.prod), safe(v.total));
+        return { value: pct(u * 100), unit: '%', note: 'Productive ÷ Total shift time.' }; }
+    },
+
+    /* ---------------- MATERIAL ---------------- */
+    {
+      id: 'yield_mat', cat: 'Material', name: 'Material Yield',
+      desc: 'Good output relative to material input.',
+      inputs: [
+        { key: 'output', label: 'Usable Output', unit: 'kg', def: 940 },
+        { key: 'input', label: 'Material Input', unit: 'kg', def: 1000 }
+      ],
+      compute: function (v) { var y = div(safe(v.output), safe(v.input));
+        return { value: pct(y * 100), unit: '%', rows: [['Waste', pct((1 - y) * 100) + ' %']], note: 'Output ÷ Input.' }; }
+    },
+    {
+      id: 'scrap_mat', cat: 'Material', name: 'Material Scrap / Waste',
+      desc: 'Wasted material and its cost.',
+      inputs: [
+        { key: 'waste', label: 'Wasted Material', unit: 'kg', def: 60 },
+        { key: 'input', label: 'Total Input', unit: 'kg', def: 1000 },
+        { key: 'cost', label: 'Cost per kg', unit: '$/kg', def: 3.2 }
+      ],
+      compute: function (v) { var r = div(safe(v.waste), safe(v.input)); var c = safe(v.waste) * safe(v.cost);
+        return { value: pct(r * 100), unit: '% waste', rows: [['Waste Cost', '$' + pct(c)]], note: 'Waste ÷ Input.' }; }
+    },
+    {
+      id: 'inv_turns', cat: 'Material', name: 'Inventory Turnover',
+      desc: 'How many times inventory is used over a period.',
+      inputs: [
+        { key: 'cogs', label: 'Cost of Goods Sold', unit: '$', def: 1200000 },
+        { key: 'avginv', label: 'Average Inventory', unit: '$', def: 200000 }
+      ],
+      compute: function (v) { var t = div(safe(v.cogs), safe(v.avginv)); var days = div(365, t);
+        return { value: pct(t), unit: 'turns/yr', rows: [['Days of Inventory', pct(days) + ' days']], note: 'COGS ÷ Average Inventory.' }; }
+    },
+    {
+      id: 'consumption', cat: 'Material', name: 'Material Consumption per Unit',
+      desc: 'Average material used per finished unit.',
+      inputs: [
+        { key: 'used', label: 'Total Material Used', unit: 'kg', def: 1000 },
+        { key: 'units', label: 'Units Produced', unit: 'pcs', def: 5000 }
+      ],
+      compute: function (v) { var c = div(safe(v.used), safe(v.units));
+        return { value: pct(c * 1000) / 1000, unit: 'kg/pc', note: 'Material Used ÷ Units.' }; }
+    },
+
+    /* ---------------- FINANCIAL ---------------- */
+    {
+      id: 'unitcost', cat: 'Financial', name: 'Cost per Unit',
+      desc: 'Total manufacturing cost divided by units produced.',
+      inputs: [
+        { key: 'material', label: 'Material Cost', unit: '$', def: 40000 },
+        { key: 'labor', label: 'Labour Cost', unit: '$', def: 22000 },
+        { key: 'overhead', label: 'Overhead', unit: '$', def: 18000 },
+        { key: 'units', label: 'Units Produced', unit: 'pcs', def: 5000 }
+      ],
+      compute: function (v) { var total = safe(v.material) + safe(v.labor) + safe(v.overhead); var c = div(total, safe(v.units));
+        return { value: pct(c), unit: '$/unit', rows: [['Total Cost', '$' + pct(total)]], note: '(Material + Labour + Overhead) ÷ Units.' }; }
+    },
+    {
+      id: 'grossmargin', cat: 'Financial', name: 'Gross Margin',
+      desc: 'Profit remaining after cost of goods sold.',
+      inputs: [
+        { key: 'revenue', label: 'Revenue', unit: '$', def: 150000 },
+        { key: 'cogs', label: 'Cost of Goods Sold', unit: '$', def: 100000 }
+      ],
+      compute: function (v) { var gp = safe(v.revenue) - safe(v.cogs); var m = div(gp, safe(v.revenue));
+        return { value: pct(m * 100), unit: '%', rows: [['Gross Profit', '$' + pct(gp)]], note: '(Revenue − COGS) ÷ Revenue.' }; }
+    },
+    {
+      id: 'cogl', cat: 'Financial', name: 'Cost of Poor Quality (COPQ)',
+      desc: 'Total financial impact of defects, scrap and rework.',
+      inputs: [
+        { key: 'scrap', label: 'Scrap Cost', unit: '$', def: 6300 },
+        { key: 'rework', label: 'Rework Cost', unit: '$', def: 2400 },
+        { key: 'warranty', label: 'Warranty / Returns', unit: '$', def: 1500 },
+        { key: 'revenue', label: 'Revenue (for %)', unit: '$', def: 150000 }
+      ],
+      compute: function (v) { var total = safe(v.scrap) + safe(v.rework) + safe(v.warranty); var m = div(total, safe(v.revenue));
+        return { value: '$' + pct(total), unit: 'COPQ', rows: [['% of Revenue', pct(m * 100) + ' %']], note: 'Scrap + Rework + Warranty.' }; }
+    },
+    {
+      id: 'roi', cat: 'Financial', name: 'Improvement ROI',
+      desc: 'Return on an improvement/kaizen investment.',
+      inputs: [
+        { key: 'saving', label: 'Annual Saving / Gain', unit: '$', def: 48000 },
+        { key: 'invest', label: 'Investment', unit: '$', def: 20000 }
+      ],
+      compute: function (v) { var roi = div(safe(v.saving) - safe(v.invest), safe(v.invest)); var pay = div(safe(v.invest), safe(v.saving) / 12);
+        return { value: pct(roi * 100), unit: '% ROI', rows: [['Payback', pct(pay) + ' months']], note: '(Gain − Investment) ÷ Investment.' }; }
+    },
+    {
+      id: 'oti', cat: 'Financial', name: 'Loss-to-Profit Impact',
+      desc: 'Translate operational losses into a financial figure (Manual §10).',
+      inputs: [
+        { key: 'dtmin', label: 'Downtime', unit: 'min', def: 120 },
+        { key: 'dtrate', label: 'Downtime Cost', unit: '$/min', def: 8.5 },
+        { key: 'ng', label: 'NG Units', unit: 'pcs', def: 80 },
+        { key: 'ngcost', label: 'NG Cost', unit: '$/pc', def: 4.2 }
+      ],
+      compute: function (v) {
+        var dt = safe(v.dtmin) * safe(v.dtrate); var ng = safe(v.ng) * safe(v.ngcost); var total = dt + ng;
+        return { value: '$' + pct(total), unit: 'total loss', rows: [['Downtime Loss', '$' + pct(dt)], ['Quality Loss', '$' + pct(ng)]], note: 'Demo rates only — configure real standard costs in Admin.' };
+      }
+    }
+  ];
+
+  function approxSigma(p) {
+    // rational approximation of the inverse normal CDF (Acklam) for yield->z
+    if (p <= 0) return 0; if (p >= 1) return 6;
+    var a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02, 1.383577518672690e+02, -3.066479806614716e+01, 2.506628277459239e+00];
+    var b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02, 6.680131188771972e+01, -1.328068155288572e+01];
+    var c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00, -2.549732539343734e+00, 4.374664141464968e+00, 2.938163982698783e+00];
+    var d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00, 3.754408661907416e+00];
+    var pl = 0.02425, ph = 1 - pl, q, r, z;
+    if (p < pl) { q = Math.sqrt(-2 * Math.log(p)); z = (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+    else if (p <= ph) { q = p - 0.5; r = q*q; z = (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q / (((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1); }
+    else { q = Math.sqrt(-2 * Math.log(1-p)); z = -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+    return z;
+  }
+
+  var CATEGORIES = ['Production', 'Quality', 'Equipment', 'Workers', 'Material', 'Financial'];
+  var CAT_ICON = { Production: '⚙️', Quality: '✓', Equipment: '🔧', Workers: '👷', Material: '📦', Financial: '💲' };
+
+  global.CALC = { list: CALCS, categories: CATEGORIES, icon: CAT_ICON, byId: function (id) { for (var i=0;i<CALCS.length;i++) if (CALCS[i].id===id) return CALCS[i]; return null; } };
+})(window);
+
+  </script>
+  <script>
 /* @section: page-interactions — FactoryAI2U CORE app controller */
 document.documentElement.classList.add('js-ready');
 (function () {
@@ -938,3 +1907,20 @@ document.documentElement.classList.add('js-ready');
   if (S && DB.byId(DB.load().users, S.userId)) renderApp(); else renderLogin();
   netStatus();
 })();
+
+  </script>
+  <script>
+  (function () {
+    if (!('serviceWorker' in navigator)) return;
+    if (location.protocol === 'file:') return;
+    var swCode = [
+      "var CACHE='factoryai2u-single-v1';",
+      "self.addEventListener('install',function(e){self.skipWaiting();e.waitUntil(caches.open(CACHE).then(function(c){return c.add(location.href.replace(/#.*$/,'')).catch(function(){});}));});",
+      "self.addEventListener('activate',function(e){e.waitUntil(self.clients.claim());});",
+      "self.addEventListener('fetch',function(e){if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request).then(function(res){var copy=res.clone();caches.open(CACHE).then(function(c){try{c.put(e.request,copy);}catch(x){}});return res;}).catch(function(){return caches.match(location.href.replace(/#.*$/,''));});}));});"
+    ].join('\n');
+    try { var blob=new Blob([swCode],{type:'text/javascript'}); navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){}); } catch (e) {}
+  })();
+  </script>
+</body>
+</html>

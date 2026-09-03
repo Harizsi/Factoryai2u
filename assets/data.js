@@ -189,13 +189,21 @@
 
   /* ---------- Store ---------- */
   var _state = null;
+  // Expose org children (plants/areas/stages/lines/machines/products/shifts/divisions)
+  // as top-level references so both s.org.* (display lookups) and s.* (forms & CRUD) work.
+  function bindOrg(st) {
+    if (!st || !st.org) return st;
+    var keys = ['divisions','plants','areas','stages','lines','machines','products','shifts'];
+    keys.forEach(function (k) { if (!st.org[k]) st.org[k] = []; st[k] = st.org[k]; });
+    return st;
+  }
   function load() {
     if (_state) return _state;
-    try { var raw = localStorage.getItem(LS_KEY); if (raw) { _state = JSON.parse(raw); return _state; } } catch (e) {}
-    _state = seed(); save(); return _state;
+    try { var raw = localStorage.getItem(LS_KEY); if (raw) { _state = bindOrg(JSON.parse(raw)); return _state; } } catch (e) {}
+    _state = bindOrg(seed()); save(); return _state;
   }
   function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(_state)); } catch (e) {} }
-  function reset() { _state = seed(); save(); return _state; }
+  function reset() { _state = bindOrg(seed()); save(); return _state; }
 
   function addAudit(user, action, detail) {
     load().audit.unshift({ id: uid('lg'), user: user, action: action, detail: detail, ts: nowISO() });
